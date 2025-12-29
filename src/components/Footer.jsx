@@ -7,7 +7,7 @@ export default function Footer() {
            <button className="bg-[#13ec13] text-[#111811] px-8 py-3 rounded-lg font-bold">Register Now</button>
         </div>
         <div className="flex flex-col md:flex-row justify-between text-gray-500 text-sm">
-          <p>© 2023 Fasika Farmers’ Connect. Addis Ababa University.</p>
+          <p>© 2026 Fasika Farmers’ Connect. Addis Ababa University.</p>
           <div className="flex gap-4">
             <a href="#">Privacy</a><a href="#">Terms</a>
           </div>

@@ -1,117 +1,171 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-// Helper for Material Symbols
+// --- HELPER: ICON ---
 const Icon = ({ name, className = "" }) => (
   <span className={`material-symbols-outlined ${className}`}>{name}</span>
 );
 
-export default function App() {
+// --- 1. NAVBAR ---
+const Navbar = ({ setCurrentPage, currentPage }) => (
+  <nav className="sticky top-0 z-50 border-b border-[#283928] bg-[#102210]/95 backdrop-blur-md px-6 py-4 flex justify-between items-center">
+    <div className="flex items-center gap-2 font-bold text-white cursor-pointer" onClick={() => setCurrentPage('home')}>
+      <Icon name="agriculture" className="text-[#13ec13]" />
+      <span className="hidden sm:inline">Fasika Connect</span>
+    </div>
+    <div className="flex gap-4 md:gap-8 text-sm font-medium">
+      {['home', 'market', 'weather', 'advisory'].map((page) => (
+        <button 
+          key={page}
+          onClick={() => setCurrentPage(page)}
+          className={`${currentPage === page ? 'text-[#13ec13]' : 'text-gray-400'} hover:text-white capitalize transition-colors`}
+        >
+          {page}
+        </button>
+      ))}
+    </div>
+    <div className="flex items-center gap-3">
+      <button onClick={() => setCurrentPage('login')} className="hidden sm:block text-gray-400 hover:text-white text-sm">Log in</button>
+      <button onClick={() => setCurrentPage('register')} className="bg-[#13ec13] text-black px-4 py-2 rounded-lg font-bold text-xs md:text-sm">Join</button>
+    </div>
+  </nav>
+);
+
+// --- 2. AUTH SYSTEM (Login, Register, Forgot Password) ---
+const AuthSystem = ({ initialMode }) => {
+  const [mode, setMode] = useState(initialMode); // 'login', 'register', 'forgot'
+
   return (
-    <div className="min-h-screen">
-      {/* 1. TOP NAVIGATION */}
-      <header className="sticky top-0 z-50 w-full border-b border-[#283928] bg-background-dark/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3">
-            <div className="flex size-8 items-center justify-center rounded-lg bg-primary/20 text-primary">
-              <Icon name="agriculture" />
+    <div className="min-h-[80vh] flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-[#1a2e1a] border border-[#283928] p-8 rounded-3xl shadow-2xl">
+        <h2 className="text-3xl font-bold text-white mb-2">
+          {mode === 'login' && 'Welcome Back'}
+          {mode === 'register' && 'Join Fasika'}
+          {mode === 'forgot' && 'Reset Password'}
+        </h2>
+        <p className="text-gray-400 mb-8 text-sm">
+          {mode === 'login' && 'Enter your farm credentials.'}
+          {mode === 'register' && 'Connect with 15M Ethiopian farmers.'}
+          {mode === 'forgot' && 'Enter your email to receive a reset link.'}
+        </p>
+
+        <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+          {mode === 'register' && (
+            <div>
+              <label className="text-xs font-bold text-gray-500 uppercase">Full Name</label>
+              <input type="text" className="w-full bg-[#102210] border border-[#283928] rounded-xl px-4 py-3 text-white mt-1 focus:border-[#13ec13] outline-none" placeholder="Abebe Bikila" />
             </div>
-            <span className="text-lg font-bold tracking-tight">Fasika Farmers’ Connect</span>
+          )}
+          <div>
+            <label className="text-xs font-bold text-gray-500 uppercase">Email Address</label>
+            <input type="email" className="w-full bg-[#102210] border border-[#283928] rounded-xl px-4 py-3 text-white mt-1 focus:border-[#13ec13] outline-none" placeholder="farmer@ethiopia.com" />
           </div>
-          
-          <nav className="hidden md:flex items-center gap-6">
-            {['how-it-works', 'farmers', 'buyers', 'features'].map(link => (
-              <a key={link} href={`#${link}`} className="text-sm font-medium text-gray-300 hover:text-primary capitalize">
-                {link.replace(/-/g, ' ')}
-              </a>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-4">
-            <a className="hidden text-xs font-medium text-gray-400 hover:text-white sm:block" href="#">Admin login</a>
-            <div className="h-4 w-px bg-[#283928] hidden sm:block"></div>
-            <button className="flex h-9 items-center justify-center rounded-lg bg-primary px-4 text-sm font-bold text-[#111811] hover:bg-primary-hover">
-              Register
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* 2. HERO SECTION */}
-      <section className="relative pt-16 pb-24 lg:pt-32 px-4">
-        <div className="mx-auto max-w-7xl grid lg:grid-cols-2 gap-12 items-center">
-          <div className="flex flex-col gap-6">
-            <div className="inline-flex items-center rounded-full border border-[#283928] bg-surface-dark px-3 py-1 text-sm font-medium text-primary w-fit">
-              <span className="flex h-2 w-2 rounded-full bg-primary mr-2 animate-pulse"></span>
-              Digital support for Ethiopia’s farmers
+          {mode !== 'forgot' && (
+            <div>
+              <label className="text-xs font-bold text-gray-500 uppercase">Password</label>
+              <input type="password" className="w-full bg-[#102210] border border-[#283928] rounded-xl px-4 py-3 text-white mt-1 focus:border-[#13ec13] outline-none" placeholder="••••••••" />
             </div>
-            <h1 className="text-4xl font-black leading-tight sm:text-6xl">
-              Know the weather.<br/>
-              <span className="text-primary">Know the price.</span><br/>
-              Reach the market.
-            </h1>
-            <p className="text-lg text-gray-300 max-w-lg">
-              A low-bandwidth platform connecting smallholder farmers with buyers. Get localized advice and trade directly.
-            </p>
-            <div className="flex gap-4">
-              <button className="h-12 bg-primary px-8 rounded-lg font-bold text-[#111811]">Register now</button>
-              <button className="h-12 border border-[#3b543b] px-8 rounded-lg font-bold">Log in</button>
+          )}
+          {mode === 'login' && (
+            <div className="text-right">
+              <button onClick={() => setMode('forgot')} className="text-[#13ec13] text-xs hover:underline">Forgot Password?</button>
             </div>
-          </div>
+          )}
+          <button className="w-full bg-[#13ec13] text-black font-bold py-4 rounded-xl hover:scale-[1.02] transition-transform">
+            {mode === 'login' ? 'Sign In' : mode === 'register' ? 'Create Account' : 'Send Reset Link'}
+          </button>
+        </form>
 
-          {/* Abstract Mockup Dashboard */}
-          <div className="relative aspect-video lg:aspect-square bg-surface-darker rounded-xl border border-[#283928] p-6 shadow-2xl overflow-hidden flex flex-col gap-4">
-            <div className="grid grid-cols-2 gap-4 h-full">
-              <div className="bg-surface-dark rounded-lg p-4 flex flex-col justify-between border border-[#283928]">
-                <Icon name="wb_sunny" className="text-primary text-4xl" />
-                <div className="h-6 w-16 bg-white/20 rounded"></div>
-              </div>
-              <div className="bg-surface-dark rounded-lg p-4 flex flex-col justify-between border border-[#283928]">
-                <Icon name="trending_up" className="text-primary text-4xl" />
-                <div className="h-6 w-20 bg-primary/20 rounded"></div>
-              </div>
-              <div className="col-span-2 bg-surface-dark rounded-lg p-4 border border-[#283928] space-y-3">
-                <div className="h-2 w-full bg-[#283928] rounded"></div>
-                <div className="h-2 w-2/3 bg-[#283928] rounded"></div>
-              </div>
-            </div>
-          </div>
+        <div className="mt-8 text-center text-sm text-gray-400">
+          {mode === 'login' ? "New here? " : "Go back to "}
+          <button onClick={() => setMode(mode === 'login' ? 'register' : 'login')} className="text-[#13ec13] font-bold hover:underline">
+            {mode === 'login' ? 'Register Now' : 'Log in'}
+          </button>
         </div>
-      </section>
-
-      {/* 3. STEPS SECTION */}
-      <section className="py-20 bg-surface-darker border-y border-[#283928]">
-        <div className="mx-auto max-w-7xl px-4 text-center mb-12">
-          <h2 className="text-3xl font-bold sm:text-4xl mb-4">Simple steps to get started</h2>
-          <div className="grid md:grid-cols-3 gap-8 text-left mt-12">
-            <StepCard icon="app_registration" title="1. Register online" desc="Create a free account easily using your phone number." />
-            <StepCard icon="query_stats" title="2. See advice and prices" desc="Get localized weather updates and market prices." />
-            <StepCard icon="handshake" title="3. Connect and trade" desc="Post your produce for sale or find farmers directly." />
-          </div>
-        </div>
-      </section>
-
-      {/* 4. FOOTER BAR */}
-      <footer className="border-t border-[#283928] bg-surface-darker py-8">
-        <div className="mx-auto max-w-7xl px-4 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-400 text-sm">
-          <div className="flex items-center gap-2 font-bold text-white">
-            <Icon name="agriculture" className="text-primary" /> Fasika Farmers’ Connect
-          </div>
-          <p>© 2023 Fasika Farmers’ Connect. Built by AAU students.</p>
-        </div>
-      </footer>
+      </div>
     </div>
   );
-}
+};
 
-// Sub-component for clean organization
-function StepCard({ icon, title, desc }) {
+// --- 3. MARKET MODULE ---
+const MarketPage = () => {
+  const crops = [
+    { name: "Magna Teff", price: "9,200 ETB", region: "Gojjam", status: "High Demand" },
+    { name: "Sidama Coffee", price: "18,500 ETB", region: "Oromia", status: "Export Grade" },
+    { name: "Red Onions", price: "4,200 ETB", region: "Meki", status: "Stable" }
+  ];
   return (
-    <div className="rounded-2xl bg-surface-dark p-8 border border-[#283928] hover:border-primary/50 transition-colors">
-      <div className="mb-6 inline-flex size-14 items-center justify-center rounded-xl bg-primary/10 text-primary">
-        <Icon name={icon} className="text-3xl" />
+    <div className="p-8 max-w-6xl mx-auto text-white">
+      <h2 className="text-3xl font-bold mb-8 text-[#13ec13]">Live Ethiopia Market Prices</h2>
+      <div className="grid md:grid-cols-3 gap-6">
+        {crops.map((c, i) => (
+          <div key={i} className="bg-[#1a2e1a] border border-[#283928] p-6 rounded-2xl hover:border-[#13ec13] transition-all">
+            <span className="text-[10px] bg-[#13ec13]/20 text-[#13ec13] px-2 py-1 rounded uppercase font-bold">{c.status}</span>
+            <h3 className="text-xl font-bold mt-2">{c.name}</h3>
+            <p className="text-3xl font-black my-4">{c.price}</p>
+            <div className="flex justify-between text-gray-500 text-sm">
+              <span>{c.region}</span>
+              <Icon name="trending_up" />
+            </div>
+          </div>
+        ))}
       </div>
-      <h3 className="text-xl font-bold mb-3">{title}</h3>
-      <p className="text-gray-400 text-sm leading-relaxed">{desc}</p>
+    </div>
+  );
+};
+
+// --- 4. WEATHER MODULE ---
+const WeatherPage = () => (
+  <div className="p-8 max-w-4xl mx-auto text-white">
+    <div className="bg-[#1a2e1a] border border-[#13ec13]/30 p-10 rounded-3xl relative overflow-hidden">
+      <div className="relative z-10">
+        <h2 className="text-5xl font-black mb-2">24°C</h2>
+        <p className="text-gray-400 mb-8">Addis Ababa, Ethiopia • Sunny</p>
+        <div className="bg-yellow-500/10 border border-yellow-500/20 p-4 rounded-xl flex gap-3 items-center">
+          <Icon name="warning" className="text-yellow-500" />
+          <p className="text-sm text-yellow-100">Frost Warning: Expected in Highlands tomorrow night. Protect young seedlings.</p>
+        </div>
+      </div>
+      <Icon name="wb_sunny" className="absolute -top-10 -right-10 text-[200px] text-yellow-500/10" />
+    </div>
+  </div>
+);
+
+// --- 5. HOME PAGE ---
+const HomePage = () => (
+  <section className="py-24 px-6 text-center text-white">
+    <h1 className="text-6xl md:text-8xl font-black mb-6 tracking-tighter">
+      ETHIOPIA’S <br /><span className="text-[#13ec13]">DIGITAL FARM.</span>
+    </h1>
+    <p className="max-w-xl mx-auto text-gray-400 text-lg mb-10">
+      Direct market access, localized weather alerts, and expert agronomy for Ethiopia's smallholder farmers.
+    </p>
+    <div className="flex flex-wrap gap-4 justify-center">
+      <button className="bg-[#13ec13] text-black px-10 py-4 rounded-2xl font-black text-lg">Check Prices</button>
+      <button className="border border-[#283928] px-10 py-4 rounded-2xl font-bold">Watch Demo</button>
+    </div>
+  </section>
+);
+
+// --- MAIN APP ---
+export default function App() {
+  const [currentPage, setCurrentPage] = useState('home');
+
+  return (
+    <div className="min-h-screen bg-[#102210] font-['Work_Sans'] selection:bg-[#13ec13] selection:text-black">
+      <Navbar setCurrentPage={setCurrentPage} currentPage={currentPage} />
+      
+      <main className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+        {currentPage === 'home' && <HomePage />}
+        {currentPage === 'market' && <MarketPage />}
+        {currentPage === 'weather' && <WeatherPage />}
+        {currentPage === 'advisory' && <div className="p-20 text-center text-white">Advisory coming soon...</div>}
+        {currentPage === 'login' && <AuthSystem initialMode="login" />}
+        {currentPage === 'register' && <AuthSystem initialMode="register" />}
+      </main>
+
+      <footer className="py-20 text-center border-t border-[#283928] mt-20 opacity-50">
+        <p className="text-gray-500 text-sm">© 2025 Fasika Farmers’ Connect. Built for the future of Ethiopia.</p>
+      </footer>
     </div>
   );
 }
